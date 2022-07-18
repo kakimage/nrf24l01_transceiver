@@ -2,7 +2,6 @@
 #include "nrf24.h"
 #include "spi.h"
 #include "delay.h"
-#include "interrupcao_externa.h"
 
 #define USA_INTERRUPCAO
 
@@ -23,8 +22,8 @@ void nrf24_init (void)
 	uint8_t parametros[5];
 
 	// configura os pinos que serao usados para o CSN, MISO, MOSI, SCK
-	spi_configura (PIN_3_26, PIN_1_00, PIN_4_29, PIN_4_28);
-	pino_CE = PIN_1_22;
+	spi_configura (PIN3_26, PIN1_00, PIN4_29, PIN4_28);
+	pino_CE = PIN3_25;
 	delay_ms(500);
 	reset();
 	limpa_FIFO();

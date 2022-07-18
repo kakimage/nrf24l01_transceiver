@@ -1,6 +1,6 @@
 #include "radio.h"
 #include "digital.h"
-#include "spi.h"
+#include "spi.hpp"
 #include "delay.h"
 
 void RADIO::configura (void)
