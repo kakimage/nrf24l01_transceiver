@@ -1,9 +1,9 @@
 
-#include "digital.h"
+#include "digital.hpp"
 #include <stdint.h>
 #include <stdio.h>
 
-#include "spi.h"
+#include "spi.hpp"
 #include "delay.h"
 
 
