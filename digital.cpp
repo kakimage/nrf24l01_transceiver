@@ -1,5 +1,5 @@
 
-#include "digital.h"
+#include "digital.hpp"
 
  DIGITAL digital;
 
@@ -138,18 +138,3 @@ void DIGITAL::pinMode(uint8_t portabit, uint8_t modo)
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -4,7 +4,6 @@
 #include "LPC17xx.h"
 #include <stdint.h>
 
- 
 #define PIN0_00  0
 #define PIN0_01  1
 #define PIN0_02  2

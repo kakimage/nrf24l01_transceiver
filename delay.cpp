@@ -1,5 +1,5 @@
 #include "LPC17xx.h"
-#include "delay.h"
+#include "delay.hpp"
 
 #define ST_CTRL     (*((volatile unsigned long*)0xE000E010)) //page 783
 volatile unsigned long sysTickCounter;
