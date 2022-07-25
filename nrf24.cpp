@@ -1,10 +1,10 @@
 #include "digital.hpp"
 #include "nrf24.hpp"
-#include "spi.h"
+#include "spi.hpp"
 #include "delay.hpp"
 #include <stdio.h>
-void modo_RX(void);
-void modo_TX(void);
+void modoRX(void);
+void modoTX(void);
 void nrf24_flush_TX (void);
 void reset (void);
 void limpa_FIFO(void);
@@ -118,19 +118,19 @@ void nrf24_transmite(uint8_t buffer[])
 {
 	uint8_t x, status;
    
-   	modo_TX();
-	spi_habilita();
-		spi_write(FLUSH_TX);
-	spi_desabilita();
+   	modoTX();
+	spi.start();
+		spi.write(FLUSH_TX);
+	spi.stop();
 
 	uint8_t crc = 0xff;
 	
 	for (x=0;x<TAMANHO_MSG-1;x++)	crc=crc+buffer[x];
 	buffer[TAMANHO_MSG-1]=crc;
-	spi_habilita();
-		spi_write(W_TX_PAYLOAD);
-		for (x=0;x<TAMANHO_MSG;x++)	spi_write(buffer[x]);
-	spi_desabilita();
+	spi.start();
+		spi.write(W_TX_PAYLOAD);
+		for (x=0;x<TAMANHO_MSG;x++)	spi.write(buffer[x]);
+	spi.stop();
 	
 
 	CE_HIGH();
@@ -142,7 +142,7 @@ void nrf24_transmite(uint8_t buffer[])
 	status = (status | (1<<5));
 	nrf24_escreve_registrador(STATUS,1,(uint8_t *)&status);
 	//_delay_ms(10);
-	modo_RX();
+	modoRX();
 	
 
 	
@@ -154,36 +154,28 @@ void nrf24_transmite(uint8_t buffer[])
 void reset (void)
 {
 	_delay_us(10);
-	spi_habilita();
+	spi.start();
 	_delay_us(10);
-	spi_write(W_REGISTER|STATUS);
+	spi.write(W_REGISTER|STATUS);
 	_delay_us(10);
-	spi_write(0x70);
+	spi.write(0x70);
 	_delay_us(10);
-	spi_desabilita();
+	spi.stop();
 }
-void modo_TX(void)
+void modoRX(void)
 {
-	uint8_t reg_config;
+	uint8_t buffer[10];
+	buffer[0]=0x72;
+	nrf24_escreve_registrador(CONFIG, 1, (uint8_t *)&buffer);
 
-	// le o valor corrente do registrador CONFIG
-	nrf24_le_registrador(1,CONFIG, &reg_config);
-	reg_config = (   (reg_config | _BV(PWR_UP) )    & ~_BV(PRIM_RX));
-	nrf24_escreve_registrador(CONFIG,1,(uint8_t *)&reg_config);
-	_delay_us(150);
 }
 
-void modo_RX(void)
+void modoTX(void)
 {
-	uint8_t reg_config;
-
-	// le o valor corrente do registrador CONFIG
-	nrf24_le_registrador(CONFIG, 1, &reg_config);
-	reg_config = reg_config | 3;
-	nrf24_escreve_registrador(CONFIG,1, (uint8_t *)&reg_config);
-
-	delay_us(20);
-	
+uint8_t buffer[10];
+	buffer[0]=0x7a;
+	nrf24_escreve_registrador(CONFIG, 1, (uint8_t *)&buffer);
+	digital.digitalWrite(PIN1_22, LOW);
 }
 
 void limpa_FIFO(void)
@@ -195,15 +187,15 @@ void limpa_FIFO(void)
 	_delay_us(10);
 	
 
-	modo_TX();
-	spi_habilita();
-		spi_write(FLUSH_TX);
-	spi_desabilita();
+	modoTX();
+	spi.start();
+		spi.write(FLUSH_TX);
+	spi.stop();
 
-    modo_RX();
-	spi_habilita();
-		spi_write(FLUSH_RX);
-	spi_desabilita();
+    modoRX();
+	spi.start();
+		spi.write(FLUSH_RX);
+	spi.stop();
 
 	nrf24_escreve_registrador (CONFIG,1,(uint8_t *)&origem);
 }
@@ -217,13 +209,13 @@ void nrf24_recebe(uint8_t buffer[])
 
 		while  (  (le_registrador(STATUS) & (1<<6)) ==0);
 		CE_LOW();
-		spi_habilita();
-			spi_write(R_RX_PAYLOAD);
-			for (x=0;x<TAMANHO_MSG;x++) buffer[x] = spi_write(0xff);	
-		spi_desabilita();
-		spi_habilita();
-			spi_write(FLUSH_RX);
-		spi_desabilita();
+		spi.start();
+			spi.write(R_RX_PAYLOAD);
+			for (x=0;x<TAMANHO_MSG;x++) buffer[x] = spi.write(0xff);	
+		spi.stop();
+		spi.start();
+			spi.write(FLUSH_RX);
+		spi.stop();
 	
 		// limpa o flag de recepcao de pacote
 		valor=le_registrador(STATUS);
@@ -240,33 +232,33 @@ void nrf24_recebe(uint8_t buffer[])
 void nrf24_le_registrador (uint8_t reg, uint8_t qtd, uint8_t vet[])
 {
 	uint8_t x;
-	spi_habilita();
-		spi_write(R_REGISTER|reg);
-		for (x=0;x<qtd;x++)  vet[x] = spi_write(0x00);
-	spi_desabilita();
+	spi.start();
+		spi.write(R_REGISTER|reg);
+		for (x=0;x<qtd;x++)  vet[x] = spi.write(0x00);
+	spi.stop();
 }
 void nrf24_flush_TX (void)
 {
-	spi_habilita();
-		spi_write(FLUSH_TX);
-	spi_desabilita();
+	spi.start();
+		spi.write(FLUSH_TX);
+	spi.stop();
 }
 void nrf24_escreve_registrador (uint8_t reg, uint8_t qtd, uint8_t vet[])
 {
 	uint8_t x;
 
-	spi_habilita();
-		spi_write(W_REGISTER|reg);
-		for (x=0;x<qtd;x++)  spi_write(vet[x]);
-	spi_desabilita();
+	spi.start();
+		spi.write(W_REGISTER|reg);
+		for (x=0;x<qtd;x++)  spi.write(vet[x]);
+	spi.stop();
 }
 uint8_t le_registrador (uint8_t reg)
 {
 	uint8_t x;
-	spi_habilita();
-		spi_write(R_REGISTER|reg);
-		x = spi_write(0x00);
-	spi_desabilita();
+	spi.start();
+		spi.write(R_REGISTER|reg);
+		x = spi.write(0x00);
+	spi.stop();
 	return x;
 }
 
