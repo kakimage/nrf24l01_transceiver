@@ -41,10 +41,9 @@ void nrf24_init (void)
 {
 	uint8_t parametros[5];
 
-	// configura os pinos que serao usados para o CSN, MISO, MOSI, SCK
+	// MISO, uint8_t MOSI, uint8_t SCK, uint8_t CS
 	_delay_ms(100);
-
-	spi.init (PIN3_26, PIN1_00, PIN4_29, PIN4_28);
+	spi.init (PIN1_00, PIN4_29, PIN4_28, PIN3_26);
 	pino_CE = PIN3_25;
 	digital.pinMode(pino_CE, OUTPUT);
 	CE_LOW();
@@ -56,7 +55,7 @@ void nrf24_init (void)
 	limpa_FIFO();	
 	
 	
-		parametros[0] = 0;
+	parametros[0] = 0;
     nrf24_escreve_registrador (DYNPD, 1, parametros);
     
     		parametros[0] = 1;
@@ -202,7 +201,6 @@ void limpa_FIFO(void)
 void nrf24_recebe(uint8_t buffer[])
 {
 	uint8_t x,valor;
-
 
 	while (1){
 		CE_HIGH();
