@@ -8,8 +8,8 @@ void RADIO::configura (void)
 	uint8_t buffer[10];
 	
 	delay_ms(1000);
-	spi.init(PIN1_25, PIN1_24, PIN1_23, PIN1_26);
-	digital.pinMode(PIN1_22, OUTPUT);
+	spi.init(PIN3_26, PIN1_00, PIN4_29, PIN4_28);
+	digital.pinMode(PIN3_25, OUTPUT);
 	
 	
 	

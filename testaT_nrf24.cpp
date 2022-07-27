@@ -15,19 +15,20 @@
 // > flash write_image erase main.bin 0x0 bin
 // Este programa usa os pinos (PIN_0_27, PIN_0_28); que sao os usados pela EEPROM no kit
 // Para usar no MBED deve-se trocar os pinos
+// Para usar no MBED deve-se trocar os pinos
 
-#include "uart.h"
-#include "digital.h"
+#include "digital.hpp"
 #include <stdio.h>
 #include <string.h>
-#include "nrf24.h"
-#include "delay.h"
+#include "nrf24.hpp"
+#include "delay.hpp"
+#include "uart.h"
 
 int main ( void ) 
 {
 	uint8_t buffer[20];
 	uint16_t x;
-	uart_init();
+	UART0_Init(9600);
 
 	nrf24_init();
 

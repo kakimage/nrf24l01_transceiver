@@ -22,22 +22,18 @@
 #include "nrf24.hpp"
 #include "delay.hpp"
 
-int main ( void ) 
-{
+#include "uart.h"
+
+int main ( void ){
 	SystemInit();
-
-	uint8_t buffer[50];
-
+	UART0_Init(9600);
+	uint8_t buffer[20];
 	nrf24_init();
-
-	
 	printf("Rodando receptor...\n");
 
 
 	while(1)
 	{
-		
-
 		//codigo para o receptor
 		nrf24_recebe(buffer);
 		buffer[TAMANHO_MSG]=0;
