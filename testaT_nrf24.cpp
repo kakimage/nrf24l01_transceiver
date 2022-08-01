@@ -29,18 +29,21 @@ int main ( void )
 	nrf24_init();
 	UART0_Init(9600);
 	
-	uint8_t buffer[20];
+	uint8_t buffer[100];
 	uint16_t x;
 	
-	printf("Rodando transmissor...\n");
+	//printf("Rodando transmissor...\n");
 
 	x=0;
 	
 	while(1)
 	{
-		sprintf((char *)buffer, "lips %d",x);
-	    	nrf24_transmite(buffer); 
+		//sprintf((char *)buffer, "lips %d",x);
+	    	//printf("%s\n",buffer); 
+	    	printf("lips %d\n", x);
+	    	//printf("lipss\n");
 	    	x++;
+	    	//delay_ms(500);
 	}
 
 	return 0 ;

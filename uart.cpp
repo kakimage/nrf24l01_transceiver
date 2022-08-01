@@ -64,13 +64,17 @@
 #define LSR_TEMT	0x40
 #define LSR_RXFE	0x80
 
+#include "nrf24.hpp"
+
  extern "C"
 int _write (int fd, const void *buf, size_t count)
 {
 	uint8_t x;
 	char *vet = (char *) buf;
+	uint8_t *vet2 = (uint8_t *) buf; 
 
-	for (x=0;x<count;x++) UART0_Sendchar(  vet[x]);
+	//for (x=0;x<count;x++) UART0_Sendchar(  vet[x]);
+	nrf24_transmite(vet2);
 	return count;
 }
  extern "C"

@@ -86,9 +86,9 @@ void nrf24_init (void)
 	parametros[0] = 0x07;
     nrf24_escreve_registrador (RF_SETUP, 1, parametros);
 
-	parametros[0] = 1;
-	parametros[1] = 1;
-	parametros[2] = 1;
+	parametros[0] = 2;
+	parametros[1] = 2;
+	parametros[2] = 2;
 	
     nrf24_escreve_registrador (RX_ADDR_P0, 3, parametros);
 
